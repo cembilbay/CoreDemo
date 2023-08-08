@@ -1,0 +1,60 @@
+﻿using BusinessLayer.Concrate;
+using BusinessLayer.ValidationRules;
+using CoreDemo.Controllers;
+using DataAccessLayer.EntityFramework;
+using EntityLayer.Concrete;
+using FluentValidation;
+using FluentValidation.Results;
+using Microsoft.AspNetCore.Mvc;
+using X.PagedList;
+using Category = EntityLayer.Concrete.Category;
+
+namespace CoreDemo.Areas.Admin.Controllers
+{
+    [Area("Admin")]
+    public class CategoryController : Controller
+    {
+        CategoryManager cm = new CategoryManager(new EfCategoryRepository());
+
+        public IActionResult Index(int page = 1)
+        {
+            var values = cm.GetList().ToPagedList(page, 3);
+            return View(values);
+        }
+        [HttpGet]
+        public ActionResult AddCategory()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult AddCategory(Category p)
+        {
+
+
+            CategoryValidator cv = new CategoryValidator();
+            ValidationResult results = cv.Validate(p);
+            if (results.IsValid)
+            {
+                p.CategoryStatus = true;
+
+                cm.TAdd(p);
+                return RedirectToAction("Index", "Category");
+
+            }
+            else
+            {
+                foreach (var item in results.Errors)
+                {
+                    ModelState.AddModelError(item.PropertyName, item.ErrorMessage);
+                }
+            }
+            return View();
+        }
+        public IActionResult CategoryDelete(int id)
+        {
+            var value = cm.TGetByID(id);
+            cm.TDelete(value);
+            return RedirectToAction("Index");
+        }
+    }
+}

@@ -1,11 +1,13 @@
 ﻿using BusinessLayer.Concrate;
 using DataAccessLayer.EntityFramework;
 using EntityLayer.Concrete;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CoreDemo.Controllers
 {
+    [AllowAnonymous]
     public class CommentController : Controller
     {
         CommentManager cm = new CommentManager(new EfCommentRepository());

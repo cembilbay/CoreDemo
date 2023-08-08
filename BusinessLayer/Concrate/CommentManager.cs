@@ -22,6 +22,11 @@ namespace BusinessLayer.Concrate
             _commentDal.Insert(comment);
         }
 
+        public List<Comment> GetCommentListWithBlog()
+        {
+            return _commentDal.GetListWithBlog();
+        }
+
         public List<Comment> GetList(int id)
         {
            return _commentDal.GetListAll(x => x.BlogID == id);
